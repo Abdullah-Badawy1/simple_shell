@@ -11,10 +11,22 @@
 #include <limits.h>
 #include <fcntl.h>
 #include <errno.h>
-
+extern char **environ;
 #define WRITE_BUF_SIZE 1024
+#define CONVERT_UNSIGNED 0x01
+#define CONVERT_LOWERCASE 0x02
 #define BUF_FLUSH '\0'
-
+#define CMD_NORM	0
+#define CMD_OR		1
+#define CMD_AND		2
+#define CMD_CHAIN	3
+#define HIST_FILE	".simple_shell_history"
+#define HIST_MAX	4096
+#define USE_GETLINE 0
+#define USE_STRTOK 0
+#define INFO_INIT \
+{NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
+	0, 0, 0}
 /* Structs */
 /**
  * struct custom_list_s - A structure to represent a custom list node.
@@ -29,22 +41,31 @@ typedef struct custom_list_s
 	struct custom_list_s *next;
 } custom_list_t;
 /**
- * struct custom_info_s - A structure to hold custom information.
- * @fname: File name.
- * @line: A line of text.
- * @line_count: Line count.
- * @status: Status code.
- * @readfd: Read file descriptor.
- * @prompt: User prompt.
- * @argv: Command-line arguments.
- * @env: Environment variables.
- * @alias: Alias list.
- * @cmd_buf_type: Command buffer type.
- * @pipe: Pipe array.
- * @piped: Piped flag.
- * @redir_type: Redirection type.
- * @redir_fd: Redirection file descriptor.
- * @redir_filename: Redirection filename.
+ * struct custom_info_s - A structure to hold custom shell information.
+ * @argc: The number of command-line arguments.
+ * @fname: The name of the current input file (if any).
+ * @line: The current input line.
+ * @line_count: The count of lines read from input.
+ * @status: The exit status of the most recent command.
+ * @readfd: The file descriptor for reading input.
+ * @prompt: The shell prompt to display.
+ * @argv: An array of command-line arguments.
+ * @env: A linked list of environment variables.
+ * @alias: A linked list of alias definitions.
+ * @cmd_buf_type: The type of command buffer (e.g., interactive or script).
+ * @pipe: An array to hold pipe file descriptors.
+ * @piped: A flag indicating if a command is piped.
+ * @redir_type: The type of input/output redirection (if any).
+ * @redir_fd: The file descriptor for redirection.
+ * @redir_filename: The filename for redirection (if any).
+ * @env_changed: A flag indicating if the environment has changed.
+ * @environ: An array of environment variable strings.
+ * @histcount: The count of command history entries.
+ *
+ * Description: This structure is used to store various attributes and
+ * state information for a custom shell program. It keeps track of
+ * command-line arguments, input/output, environment variables, and
+ * other important shell-related data.
  */
 typedef struct custom_info_s
 {
@@ -66,9 +87,11 @@ typedef struct custom_info_s
 	char *redir_filename;
 	int env_changed;
 	char **environ;
+	int histcount;
 } custom_info_t;
 
 /* Function prototypes */
+char *custom_convert_number(long int, int, int);
 char *custom_malloc(size_t size);
 void custom_free(void *ptr);
 void custom_add_node_end(custom_list_t **head, char *data, int alloc);
@@ -80,6 +103,11 @@ int custom_eputchar(char c);
 int custom_putfd(char c, int fd);
 int custom_putsfd(char *str, int fd);
 int custom_erratoi(char *s);
+int custom_build_history_list(custom_info_t *info, char *buf, int linecount);
+int custom_renumber_history(custom_info_t *info);
+void custom_free(void *ptr);
+char *custom_get_environment(custom_info_t *, const char *);
+char *custom_get_environment(custom_info_t *info, const char *key);
 void custom_print_error(custom_info_t *info, char *estr);
 int custom_print_d(int input, int fd);
 char *custom_convert_number(long int num, int base, int flags);
@@ -103,5 +131,8 @@ void custom_check_chain(custom_info_t *info,
 int custom_replace_alias(custom_info_t *info);
 int custom_replace_vars(custom_info_t *info);
 int custom_replace_string(char **old, char *new);
+size_t custom_print_list_str(const custom_list_t *);
+int custom_set_custom_environment(custom_info_t *, char *, char *);
+int custom_unset_custom_environment(custom_info_t *, char *);
 
 #endif /* MAIN_H */

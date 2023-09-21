@@ -24,19 +24,14 @@ char *custom_memset(char *s, char b, unsigned int n)
 
 /**
  * custom_free - Frees a string of strings.
- * @pp: String of strings.
+ * @ptr: Pointer to memory to be freed.
  */
-void custom_free(char **pp)
+void custom_free(void *ptr)
 {
-	char **a = pp;
-
-	if (!pp)
+	if (!ptr)
 		return;
 
-	while (*pp)
-		free(*pp++);
-
-	free(a);
+	free(ptr);
 }
 
 /**
@@ -49,7 +44,7 @@ void custom_free(char **pp)
  */
 void *custom_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	char *p;
+	void *p;
 
 	if (!ptr)
 		return (malloc(new_size));
@@ -67,7 +62,7 @@ void *custom_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 	old_size = old_size < new_size ? old_size : new_size;
 
 	while (old_size--)
-		p[old_size] = ((char *)ptr)[old_size];
+		((char *)p)[old_size] = ((char *)ptr)[old_size];
 
 	free(ptr);
 	return (p);
