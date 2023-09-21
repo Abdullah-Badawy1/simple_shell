@@ -1,50 +1,21 @@
 #include "main.h"
 
 /**
- * main - Entry point of the program.
- * @ac: Argument count.
- * @av: Argument vector.
+ * main - The main function for our custom C-Shell program.
  *
- * Return: 0 on success, 1 on error.
+ * This function serves as the entry point to our C-Shell. It initializes the
+ * shell, prints a welcome message, and enters the main shell loop.
+ *
+ * @argc: The number of command-line arguments (unused).
+ * @argv: An array of command-line argument strings (unused).
+ *
+ * Return: This function returns EXIT_SUCCESS upon successful execution.
  */
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
-	custom_info_t info[] = { CUSTOM_INFO_INIT };
-	int fd = 2;
-
-	/* Using inline assembly to demonstrate a point */
-	asm (
-		"mov %1, %0\n\t"
-		"add $3, %0"
-		: "=r" (fd)
-		: "r" (fd)
-	);
-
-	/* Ternary operator used to set 'fd' based on 'ac' value */
-	fd = (ac == 2) ? open(av[1], O_RDONLY) : fd;
-
-	if (fd == -1)
-	{
-		/* Ternary operator used to handle different 'errno' values */
-		(errno == EACCES) ?
-			exit(126) :
-			(errno == ENOENT) ?
-				(void)(
-					custom_eputs(av[0]),
-					custom_eputs(": 0: Can't open "),
-					custom_eputs(av[1]),
-					custom_eputchar('\n'),
-					custom_eputchar(BUF_FLUSH),
-					exit(127)
-				) :
-				(void)0; /* Default case */
-		return (EXIT_FAILURE);
-	}
-
-	info->readfd = fd;
-
-	custom_populate_environment_list(info);
-	custom_read_history(info);
-	custom_main(info, av);
+	(void)argc;
+	(void)argv;
+	printf("Welcome$\n");
+	run_shell_loop();
 	return (EXIT_SUCCESS);
 }
