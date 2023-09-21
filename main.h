@@ -128,9 +128,6 @@ char *custom_strdup(const char *);
 void custom_puts(char *);
 int custom_putchar(char);
 
-char *custom_strncpy(char *, char *, int);
-char *custom_strncat(char *, char *, int);
-char *custom_strchr(char *, char);
 
 char **custom_str_to_words(char *, char *);
 char **custom_str_to_words_v2(char *, char);
@@ -200,4 +197,8 @@ void custom_check_chain(custom_info_t *, char *, size_t *, size_t, size_t);
 int custom_replace_alias(custom_info_t *);
 int custom_replace_variables(custom_info_t *);
 int custom_replace_string(char **, char *);
+
+char *custom_strncpy(char *dest, const char *src, size_t n);
+char *custom_strncat(char *dest, const char *src, size_t n);
+char *custom_strchr(const char *s, int c);
 #endif
