@@ -27,9 +27,9 @@ char *search_file(char *filename, char **path_list)
 			switch (entry->d_type)
 			{
 				case DT_REG:
-					if (compare_strings(entry->d_name, filename, string_length(filename)) == 0)
+					if (compare_strings(entry->d_name, filename) == 0)
 					{
-					file_path = (char *)malloc(string_length(path_list[i]) + string_length(filename) + 2);
+						file_path = (char *)malloc(string_length(path_list[i]) + string_length(filename) + 2);
 						if (file_path == NULL)
 						{
 							closedir(dir);

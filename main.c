@@ -26,13 +26,13 @@ int main(int argc, char **argv, char **envp)
 			input_tokens = parse_input(input_line);
 			if (input_tokens == NULL)
 				return (0);
-			if (compare_strings(input_tokens[0], "exit", 4) == 0)
+			if (compare_strings(input_tokens[0], "exit") == 0)
 			{
 				free(input_line);
 				free(input_tokens);
 				exit(EXIT_SUCCESS);
 			}
-			if (compare_strings(input_tokens[0], "env", 3) == 0)
+			if (compare_strings(input_tokens[0], "env") == 0)
 				print_environment(envp);
 			else
 			{
@@ -43,9 +43,9 @@ int main(int argc, char **argv, char **envp)
 					path_tokens = parse_path(envp);
 					executable_path = search_file(input_tokens[0], path_tokens);
 				}
-				if (path_type == 1 || (path_type == 0 && compare_strings(executable_path, "0", 1) == 0))
+				if (path_type == 1 || (path_type == 0 && compare_strings(executable_path, "0") == 0))
 					puts("command not found");
-				else if (path_type == 2 || (path_type == 0 && compare_strings(executable_path, "0", 1) != 0))
+				else if (path_type == 2 || (path_type == 0 && compare_strings(executable_path, "0") != 0))
 					execute_command(input_tokens, executable_path, envp);
 				free(input_line);
 				free(input_tokens);

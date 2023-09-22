@@ -1,30 +1,27 @@
 #include "main.h"
 
 /**
- * compare_strings - compare two strings up to a specified length
- *
- * @str1: first string
- * @str2: second string
+ * _strncmp - compare two strings up to a specified length
+ * @s1: first string
+ * @s2: second string
  * @n: number of characters to compare
  *
- * Return: (0) if strings are equal up to n characters,
- * otherwise the difference
+ * Return: size_t
  */
-int compare_strings(char *str1, char *str2, size_t n)
+size_t _strncmp(char *s1, char *s2, size_t n)
 {
-	size_t i = 0;
+	size_t i, j;
 
-	do
-
+	for (j = 0; s1[j] != '\0' && j < n; j++)
 	{
-		if (str1[i] != str2[i])
-			return (str1[i] - str2[i]);
-		i++;
-	} while (str1[i] != '\0' && str2[i] != '\0' && i < n);
-
+		i = s1[j] - s2[j];
+		if (i != 0)
+		{
+			return (i);
+		}
+	}
 	return (0);
 }
-
 /**
  * get_path_from_environment - get the PATH environment variable
  *
@@ -40,7 +37,7 @@ char *get_path_from_environment(char **env)
 	do
 
 	{
-		if (compare_strings(env[index], "PATH=", 5) == 0)
+		if (compare_strings(env[index], "PATH=") == 0)
 			break;
 		index++;
 	} while (env[index] != NULL);
